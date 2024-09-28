@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback  } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button, Form, Modal, InputGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
@@ -6,6 +6,7 @@ import PlusIcon from '../../components/UI/PlusIcon';
 import LendingCard from '../../components/card/Card';
 import { groups } from "../../data/groups";
 import { LIMIT } from '../../constants/index';
+
 const defaultBorrowing = {
    id: 0,
    productName: '',
@@ -15,16 +16,19 @@ const defaultBorrowing = {
    description: '',
    date: '',
 };
+
 function BorrowingPage() {
    const [show, setShow] = useState(false);
    const [borrowings, setBorrowings] = useState([]);
    const [borrowing, setBorrowing] = useState(defaultBorrowing);
    const [validated, setValidated] = useState(false);
-   const handleClose = () => setShow(false);
-   const handleShow = () => setShow(true);
    const [search, setSearch] = useState('');
    const [selected, setSelected] = useState(null);
-   const [ group, setGroup ] = useState( "all" );
+   const [group, setGroup] = useState("all");
+   const [currentPage, setCurrentPage] = useState(1);
+
+   const handleClose = () => setShow(false);
+   const handleShow = () => setShow(true);
 
    const handleSubmit = e => {
       e.preventDefault();
@@ -88,9 +92,9 @@ function BorrowingPage() {
       setBorrowing(defaultBorrowing);
    };
 
-   const handleSearch = useCallback( ( e ) => {
-      setSearch( e.target.value.trim().toLowerCase() )
-   }, [] )
+   const handleSearch = useCallback(e => {
+      setSearch(e.target.value.trim().toLowerCase());
+   }, []);
 
    useEffect(() => {
       const borrowings = JSON.parse(localStorage.getItem('borrowings'));
@@ -98,6 +102,18 @@ function BorrowingPage() {
       setBorrowings(newData);
    }, []);
 
+   const filteredBorrowings = borrowings
+      .filter(borrowing => 
+         borrowing.productName.toLowerCase().includes(search) &&
+         (group === "all" || borrowing.group === group)
+      );
+
+   const totalPages = Math.ceil(filteredBorrowings.length / LIMIT);
+   const paginatedBorrowings = filteredBorrowings.slice((currentPage - 1) * LIMIT, currentPage * LIMIT);
+
+   const handlePageChange = (pageNumber) => {
+      setCurrentPage(pageNumber);
+   };
 
    return (
       <div>
@@ -107,43 +123,47 @@ function BorrowingPage() {
          >
             <PlusIcon></PlusIcon>
          </button>
-
          
-         <InputGroup className="Search  mb-3">
+         <InputGroup className="Search mb-3">
             <Form.Control
                value={search}
                onChange={handleSearch}
                placeholder="Searching student"
-               />
-               <InputGroup.Text>
-               <Form.Select value={borrowings?.group} onChange={( e ) => setGroup( e.target.value )}>
+            />
+            <InputGroup.Text>
+               <Form.Select value={group} onChange={(e) => setGroup(e.target.value)}>
                   <option value="all">ALL GROUPS</option>
-                  {groups.map( ( group ) => (
+                  {groups.map(group => (
                      <option key={group} value={group}>
-                     {group}
+                        {group}
                      </option>
-                  ) )}
+                  ))}
                </Form.Select>
-               </InputGroup.Text>
-            </InputGroup>
+            </InputGroup.Text>
+         </InputGroup>
 
-         {borrowings
-            .filter(
-               borrowing =>
-                  borrowing.productName
-                     .toLowerCase()
-                     .includes(search.trim().toLowerCase()) 
-            )
-            .map((item, i) => (
-               <LendingCard
+         {paginatedBorrowings.map((item, i) => (
+            <LendingCard
+               key={i}
+               {...item}
+               path='borrowings'
+               data={item?.borrowing}
+               deleteData={deleteData}
+               editData={editData}
+            />
+         ))}
+
+         <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+               <button
                   key={i}
-                  {...item}
-                  path='borrowings'
-                  data={item?.borrowing}
-                  deleteData={deleteData}
-                  editData={editData}
-               />
+                  onClick={() => handlePageChange(i + 1)}
+                  className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
+               >
+                  {i + 1}
+               </button>
             ))}
+         </div>
 
          <Modal show={show} onHide={handleClose}>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -223,15 +243,15 @@ function BorrowingPage() {
 
                   <Form.Group className="mb-3" controlId="group">
                      <Form.Label>Groups</Form.Label>
-                     <Form.Select onChange={handleChange} value={borrowings?.group}>
-                        {groups.map( ( group ) => (
+                     <Form.Select onChange={handleChange} value={borrowing.group}>
+                        {groups.map(group => (
                            <option key={group} value={group}>
-                           {group}
+                              {group}
                            </option>
-                        ) )}
+                        ))}
                      </Form.Select>
                      <Form.Control.Feedback type="invalid">
-                        Please fill !
+                        Please fill!
                      </Form.Control.Feedback>
                   </Form.Group>
                </Modal.Body>
