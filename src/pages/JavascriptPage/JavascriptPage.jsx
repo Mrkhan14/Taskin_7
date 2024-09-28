@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 import PlusIcon from '../../components/UI/PlusIcon';
 import LendingCard from '../../components/card/Card';
 import { groups } from "../../data/groups";
+import { LIMIT } from '../../constants/index';
 const defaultBorrowing = {
    id: 0,
    productName: '',
@@ -107,7 +108,8 @@ function BorrowingPage() {
             <PlusIcon></PlusIcon>
          </button>
 
-         <InputGroup className="mb-3">
+         
+         <InputGroup className="Search  mb-3">
             <Form.Control
                value={search}
                onChange={handleSearch}
@@ -123,7 +125,6 @@ function BorrowingPage() {
                   ) )}
                </Form.Select>
                </InputGroup.Text>
-               {/* <div className="alert alert-warning">{sum}</div> */}
             </InputGroup>
 
          {borrowings
