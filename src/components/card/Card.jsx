@@ -5,21 +5,27 @@ import { Link } from 'react-router-dom';
 const LendingCard = props => {
    const {
       id,
-      firstName,
-      lastName,
-      phoneNumber,
+      productName,
+      price,
+      group,
+      quantity,
+      description,
       date,
+
+      path,
       deleteData,
       editData,
-      path,
-      data,
    } = props;
    return (
       <div className='user'>
          <div className='user-top p-3 d-flex justify-content-between align-items-center'>
             <div className='user-name'>
-               {firstName} {lastName}
+               {productName} 
             </div>
+            <div>
+               Price: <b>{price}</b>
+            </div>
+
             <div className='btns'>
                <Link to={`/${path}/${id}`} className='btn btn-outline-primary'>
                   M
@@ -40,10 +46,13 @@ const LendingCard = props => {
          </div>
          <div className='p-3 d-flex justify-content-between align-items-center'>
             <div>
-               Phone : <b>{phoneNumber}</b>
+               Group : <b>{group}</b>
             </div>
             <div>
-               Amount of money: <b>{data}</b>
+               Quantity: <b>{quantity}</b>
+            </div>
+            <div>
+               description: <b>{description}</b>
             </div>
             <div>
                Date: <b>{date}</b>
@@ -55,9 +64,7 @@ const LendingCard = props => {
 
 LendingCard.prototype = {
    id: PropTypes.number,
-   bebt: PropTypes.number,
-   firstName: PropTypes.string,
-   lastName: PropTypes.string,
-   phoneNumber: PropTypes.string,
+   quantity: PropTypes.string,
+   group: PropTypes.string,
 };
 export default LendingCard;

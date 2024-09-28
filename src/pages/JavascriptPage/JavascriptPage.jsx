@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { useEffect, useState, useCallback  } from 'react';
+import { Button, Form, Modal, InputGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
 import PlusIcon from '../../components/UI/PlusIcon';
@@ -87,11 +87,17 @@ function BorrowingPage() {
       setBorrowing(defaultBorrowing);
    };
 
+   const handleSearch = useCallback( ( e ) => {
+      setSearch( e.target.value.trim().toLowerCase() )
+   }, [] )
+
    useEffect(() => {
       const borrowings = JSON.parse(localStorage.getItem('borrowings'));
       const newData = Array.isArray(borrowings) ? borrowings : [];
       setBorrowings(newData);
    }, []);
+
+
    return (
       <div>
          <button
@@ -101,22 +107,31 @@ function BorrowingPage() {
             <PlusIcon></PlusIcon>
          </button>
 
-         <div>
-            <input
+         <InputGroup className="mb-3">
+            <Form.Control
                value={search}
-               type='text'
-               className='form-control'
-               placeholder='Searching'
-               onChange={e => setSearch(e.target.value)}
-            />
-         </div>
+               onChange={handleSearch}
+               placeholder="Searching student"
+               />
+               <InputGroup.Text>
+               <Form.Select value={borrowings?.group} onChange={( e ) => setGroup( e.target.value )}>
+                  <option value="all">ALL GROUPS</option>
+                  {groups.map( ( group ) => (
+                     <option key={group} value={group}>
+                     {group}
+                     </option>
+                  ) )}
+               </Form.Select>
+               </InputGroup.Text>
+               {/* <div className="alert alert-warning">{sum}</div> */}
+            </InputGroup>
 
          {borrowings
             .filter(
                borrowing =>
                   borrowing.productName
                      .toLowerCase()
-                     .includes(search.trim().toLowerCase())
+                     .includes(search.trim().toLowerCase()) 
             )
             .map((item, i) => (
                <LendingCard
@@ -207,7 +222,7 @@ function BorrowingPage() {
 
                   <Form.Group className="mb-3" controlId="group">
                      <Form.Label>Groups</Form.Label>
-                     <Form.Select onChange={handleChange} value={group}>
+                     <Form.Select onChange={handleChange} value={borrowings?.group}>
                         {groups.map( ( group ) => (
                            <option key={group} value={group}>
                            {group}
