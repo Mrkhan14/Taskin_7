@@ -1,0 +1,37 @@
+header {
+   padding: 10px 24px;
+   height: 6vh;
+   border-bottom: 1px solid #e1e1e1;
+}
+header .logo-img {
+   height: 4vh;
+}
+.logo span {
+   font-size: 19px;
+   font-weight: 600;
+   color: #8cc63f;
+}
+.header-block > div {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+.nav-link {
+   display: flex !important;
+}
+
+.name-block {
+   font-size: 18px;
+   margin-left: 10px;
+   color: #1d284d;
+   font-weight: 600;
+}
+
+@media only screen and (max-width: 768px) {
+   .nav-link.active {
+      background: #8cc63f;
+      color: #fff;
+      padding: 12px;
+      border-radius: 50px;
+   }
+}

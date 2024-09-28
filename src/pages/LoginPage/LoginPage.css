@@ -1,0 +1,15 @@
+.login-page {
+   height: 100vh;
+   overflow: hidden;
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+.login-page form {
+   width: 320px;
+}
+
+.login-page .logo-img {
+   width: 100px;
+}
