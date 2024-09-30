@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 
 function HomePage() {
    const [totalItem, setTotalItem] = useState(0);
@@ -10,8 +8,15 @@ function HomePage() {
    useEffect(() => {
       const data = JSON.parse(localStorage.getItem('salesShops')) || [];
       const itemCount = data.length;
-      const totalItemPrice = data.reduce((acc, item) => acc + parseFloat(item.price) * parseFloat(item.quantity), 0);
-      const totalItemQuantity = data.reduce((acc, item) => acc + parseFloat(item.quantity), 0);
+      const totalItemPrice = data.reduce(
+         (acc, item) =>
+            acc + parseFloat(item.price) * parseFloat(item.quantity),
+         0
+      );
+      const totalItemQuantity = data.reduce(
+         (acc, item) => acc + parseFloat(item.quantity),
+         0
+      );
 
       setTotalItem(itemCount);
       setTotalPrice(totalItemPrice);
@@ -19,7 +24,7 @@ function HomePage() {
    }, []);
 
    return (
-      <div className='p-3'>       
+      <div className='p-3'>
          <div className='item-home debts mb-4 mt-4 d-flex justify-content-between'>
             <div>
                <div className='title'>Product Total</div>

@@ -1,17 +1,17 @@
-import { useEffect, useState, useCallback } from 'react';
-import { Button, Form, Modal, InputGroup } from 'react-bootstrap';
+import { useCallback, useEffect, useState } from 'react';
+import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
 import PlusIcon from '../../components/UI/PlusIcon';
 import LendingCard from '../../components/card/Card';
-import { groups } from "../../data/groups";
 import { LIMIT } from '../../constants/index';
+import { groups } from '../../data/groups';
 
 const defaultSalesShop = {
    id: 0,
    productName: '',
    price: '',
-   group: "Non",
+   group: 'Non',
    quantity: '',
    description: '',
    date: '',
@@ -24,7 +24,7 @@ function SalesShopPage() {
    const [validated, setValidated] = useState(false);
    const [search, setSearch] = useState('');
    const [selected, setSelected] = useState(null);
-   const [group, setGroup] = useState("all");
+   const [group, setGroup] = useState('all');
    const [currentPage, setCurrentPage] = useState(1);
 
    const handleClose = () => setShow(false);
@@ -102,16 +102,19 @@ function SalesShopPage() {
       setSalesShops(newData);
    }, []);
 
-   const filteredSalesShops = salesShops
-      .filter(salesShop => 
+   const filteredSalesShops = salesShops.filter(
+      salesShop =>
          salesShop.productName.toLowerCase().includes(search) &&
-         (group === "all" || salesShop.group === group)
-      );
+         (group === 'all' || salesShop.group === group)
+   );
 
    const totalPages = Math.ceil(filteredSalesShops.length / LIMIT);
-   const paginatedSalesShops = filteredSalesShops.slice((currentPage - 1) * LIMIT, currentPage * LIMIT);
+   const paginatedSalesShops = filteredSalesShops.slice(
+      (currentPage - 1) * LIMIT,
+      currentPage * LIMIT
+   );
 
-   const handlePageChange = (pageNumber) => {
+   const handlePageChange = pageNumber => {
       setCurrentPage(pageNumber);
    };
 
@@ -123,16 +126,19 @@ function SalesShopPage() {
          >
             <PlusIcon></PlusIcon>
          </button>
-         
-         <InputGroup className="Search mb-3">
+
+         <InputGroup className='Search mb-3'>
             <Form.Control
                value={search}
                onChange={handleSearch}
-               placeholder="Searching student"
+               placeholder='Filter'
             />
             <InputGroup.Text>
-               <Form.Select value={group} onChange={(e) => setGroup(e.target.value)}>
-                  <option value="all">ALL GROUPS</option>
+               <Form.Select
+                  value={group}
+                  onChange={e => setGroup(e.target.value)}
+               >
+                  <option value='all'>ALL GROUPS</option>
                   {groups.map(group => (
                      <option key={group} value={group}>
                         {group}
@@ -154,12 +160,14 @@ function SalesShopPage() {
          ))}
 
          {totalPages > 1 && (
-            <div className="d-flex justify-content-center align-items-center">
+            <div className='d-flex justify-content-center align-items-center'>
                {Array.from({ length: totalPages }, (_, i) => (
                   <button
                      key={i}
                      onClick={() => handlePageChange(i + 1)}
-                     className={` button page-item ${currentPage === i + 1 ? 'active bg-primary' : ''}`}
+                     className={` button page-item ${
+                        currentPage === i + 1 ? 'active bg-primary' : ''
+                     }`}
                   >
                      {i + 1}
                   </button>
@@ -243,16 +251,19 @@ function SalesShopPage() {
                      </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Form.Group className="mb-3" controlId="group">
+                  <Form.Group className='mb-3' controlId='group'>
                      <Form.Label>Groups</Form.Label>
-                     <Form.Select onChange={handleChange} value={salesShop.group}>
+                     <Form.Select
+                        onChange={handleChange}
+                        value={salesShop.group}
+                     >
                         {groups.map(group => (
                            <option key={group} value={group}>
                               {group}
                            </option>
                         ))}
                      </Form.Select>
-                     <Form.Control.Feedback type="invalid">
+                     <Form.Control.Feedback type='invalid'>
                         Please fill!
                      </Form.Control.Feedback>
                   </Form.Group>
