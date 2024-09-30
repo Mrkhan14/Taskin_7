@@ -1,7 +1,7 @@
 import { Button, Form, Modal } from 'react-bootstrap';
 import List from '../../components/card/List';
 import SalesShopFilter from '../../components/filters/SalesShopFilter';
-import PlusIcon from '../../components/ui/PlusIcon';
+import PlusIcon from '../../components/PlusIcon';
 import { groups } from '../../data/groups';
 import useShopCRUD from '../../hooks/useShopCRUD';
 
