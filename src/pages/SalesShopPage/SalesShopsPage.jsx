@@ -1,13 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
-import { toast } from 'react-toastify';
-import { v4 } from 'uuid';
-import PlusIcon from '../../components/UI/PlusIcon';
-import LendingCard from '../../components/card/Card';
-import { LIMIT } from '../../constants/index';
+import { Button, Form, Modal } from 'react-bootstrap';
+import List from '../../components/card/List';
+import SalesShopFilter from '../../components/filters/SalesShopFilter';
+import PlusIcon from '../../components/ui/PlusIcon';
 import { groups } from '../../data/groups';
+import useShopCRUD from '../../hooks/useShopCRUD';
 
-const defaultSalesShop = {
+const defaultItems = {
    id: 0,
    productName: '',
    price: '',
@@ -17,105 +15,44 @@ const defaultSalesShop = {
    date: '',
 };
 
-function SalesShopPage() {
-   const [show, setShow] = useState(false);
-   const [salesShops, setSalesShops] = useState([]);
-   const [salesShop, setSalesShop] = useState(defaultSalesShop);
-   const [validated, setValidated] = useState(false);
-   const [search, setSearch] = useState('');
-   const [selected, setSelected] = useState(null);
-   const [group, setGroup] = useState('all');
-   const [currentPage, setCurrentPage] = useState(1);
+const SalesShopPage = () => {
+   const {
+      items: salesShops,
+      item: salesShop,
+      show,
+      validated,
+      group,
+      selected,
+      search,
+      setSearch,
+      currentPage,
+      setCurrentPage,
+      setGroup,
+      openModal,
+      handleShow,
+      handleClose,
+      handleChange,
+      handleSubmit,
+      handleSearch,
+      deleteItem,
+      editItem,
+   } = useShopCRUD(defaultItems, 'salesShops');
 
-   const handleClose = () => setShow(false);
-   const handleShow = () => setShow(true);
-
-   const handleSubmit = e => {
-      e.preventDefault();
-      if (e.currentTarget.checkValidity()) {
-         if (selected === null) {
-            const newUpdateSalesShops = [
-               ...salesShops,
-               { ...salesShop, id: v4() },
-            ];
-            setSalesShops(newUpdateSalesShops);
-            localStorage.setItem(
-               'salesShops',
-               JSON.stringify(newUpdateSalesShops)
-            );
-            toast.success("Malumot qo'shildi");
-         } else {
-            const newAddSalesShops = salesShops.map(item =>
-               item.id === selected ? salesShop : item
-            );
-            localStorage.setItem(
-               'salesShops',
-               JSON.stringify(newAddSalesShops)
-            );
-            setSalesShops(newAddSalesShops);
-            toast.success("Malumot o'zgardi");
-         }
-         setSalesShop(defaultSalesShop);
-         setValidated(false);
-         handleClose();
-      } else {
-         setValidated(true);
-         toast.error('Erverda xatolik bor');
-      }
+   const salesFilter = {
+      group,
+      search,
+      setGroup,
+      handleSearch,
    };
 
-   const handleChange = e => {
-      setSalesShop({ ...salesShop, [e.target.id]: e.target.value });
-   };
-
-   const deleteData = id => {
-      let newSalesShops = salesShops.filter(salesShop => salesShop.id !== id);
-      if (newSalesShops) {
-         setSalesShops(newSalesShops);
-         localStorage.setItem('salesShops', JSON.stringify(newSalesShops));
-         toast.success("Malumot o'chrildi");
-      } else {
-         toast.error('Erverda xatolik bor');
-      }
-   };
-
-   const editData = id => {
-      const moneyFound = salesShops.find(salesShop => salesShop.id === id);
-      setSelected(id);
-      setSalesShop(moneyFound);
-      handleShow();
-   };
-
-   const openModal = () => {
-      handleShow();
-      setSelected(null);
-      setSalesShop(defaultSalesShop);
-   };
-
-   const handleSearch = useCallback(e => {
-      setSearch(e.target.value.trim().toLowerCase());
-   }, []);
-
-   useEffect(() => {
-      const salesShops = JSON.parse(localStorage.getItem('salesShops'));
-      const newData = Array.isArray(salesShops) ? salesShops : [];
-      setSalesShops(newData);
-   }, []);
-
-   const filteredSalesShops = salesShops.filter(
-      salesShop =>
-         salesShop.productName.toLowerCase().includes(search) &&
-         (group === 'all' || salesShop.group === group)
-   );
-
-   const totalPages = Math.ceil(filteredSalesShops.length / LIMIT);
-   const paginatedSalesShops = filteredSalesShops.slice(
-      (currentPage - 1) * LIMIT,
-      currentPage * LIMIT
-   );
-
-   const handlePageChange = pageNumber => {
-      setCurrentPage(pageNumber);
+   const studentTableProps = {
+      group,
+      search,
+      salesShops,
+      currentPage,
+      setCurrentPage,
+      editItem,
+      deleteItem,
    };
 
    return (
@@ -127,53 +64,9 @@ function SalesShopPage() {
             <PlusIcon></PlusIcon>
          </button>
 
-         <InputGroup className='Search mb-3'>
-            <Form.Control
-               value={search}
-               onChange={handleSearch}
-               placeholder='Filter'
-            />
-            <InputGroup.Text>
-               <Form.Select
-                  value={group}
-                  onChange={e => setGroup(e.target.value)}
-               >
-                  <option value='all'>ALL GROUPS</option>
-                  {groups.map(group => (
-                     <option key={group} value={group}>
-                        {group}
-                     </option>
-                  ))}
-               </Form.Select>
-            </InputGroup.Text>
-         </InputGroup>
+         <SalesShopFilter {...salesFilter}></SalesShopFilter>
 
-         {paginatedSalesShops.map((item, i) => (
-            <LendingCard
-               key={i}
-               {...item}
-               path='sales'
-               data={item?.salesShop}
-               deleteData={deleteData}
-               editData={editData}
-            />
-         ))}
-
-         {totalPages > 1 && (
-            <div className='d-flex justify-content-center align-items-center'>
-               {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                     key={i}
-                     onClick={() => handlePageChange(i + 1)}
-                     className={` button page-item ${
-                        currentPage === i + 1 ? 'active bg-primary' : ''
-                     }`}
-                  >
-                     {i + 1}
-                  </button>
-               ))}
-            </div>
-         )}
+         <List {...studentTableProps}></List>
 
          <Modal show={show} onHide={handleClose}>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -280,6 +173,6 @@ function SalesShopPage() {
          </Modal>
       </div>
    );
-}
+};
 
 export default SalesShopPage;

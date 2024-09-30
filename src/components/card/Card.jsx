@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
-const LendingCard = props => {
+const Card = props => {
    const {
       id,
       productName,
@@ -11,17 +11,17 @@ const LendingCard = props => {
       quantity,
       description,
       date,
-
       path,
       deleteData,
       editData,
    } = props;
-   console.log(path);
+   console.log('Card');
+
    return (
       <div className='user'>
          <div className='user-top p-3 d-flex justify-content-between align-items-center'>
             <div className='user-name w-25 text-right'>
-               Product Name:  <b>{productName}</b>
+               Product Name: <b>{productName}</b>
             </div>
             <div className='user-name w-25'>
                Price: <b>{price}</b>
@@ -48,14 +48,14 @@ const LendingCard = props => {
                   D
                </button>
             </div>
-         </div> 
+         </div>
       </div>
    );
 };
 
-LendingCard.prototype = {
+Card.prototype = {
    id: PropTypes.number,
    quantity: PropTypes.string,
    group: PropTypes.string,
 };
-export default LendingCard;
+export default memo(Card);

@@ -8,6 +8,8 @@ const LendingPage = () => {
    const [status, setStatus] = useState('LOADING');
    const [salesShop, setSalesShop] = useState(null);
 
+   console.log('LendingPage');
+
    useEffect(() => {
       const getData = async () => {
          await setStatus('LOADING');
