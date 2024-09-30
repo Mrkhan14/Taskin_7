@@ -16,14 +16,19 @@ const LendingCard = props => {
       deleteData,
       editData,
    } = props;
+   console.log(path);
    return (
       <div className='user'>
          <div className='user-top p-3 d-flex justify-content-between align-items-center'>
-            <div className='user-name'>
-               {productName} 
+            <div className='user-name w-25 text-right'>
+               Product Name:  <b>{productName}</b>
             </div>
-            <div>
+            <div className='user-name w-25'>
                Price: <b>{price}</b>
+            </div>
+
+            <div className='user-name w-25'>
+               Group: <b>{group}</b>
             </div>
 
             <div className='btns'>
@@ -43,21 +48,7 @@ const LendingCard = props => {
                   D
                </button>
             </div>
-         </div>
-         <div className='p-3 d-flex justify-content-between align-items-center'>
-            <div>
-               Group : <b>{group}</b>
-            </div>
-            <div>
-               Quantity: <b>{quantity}</b>
-            </div>
-            <div>
-               description: <b>{description}</b>
-            </div>
-            <div>
-               Date: <b>{date}</b>
-            </div>
-         </div>
+         </div> 
       </div>
    );
 };

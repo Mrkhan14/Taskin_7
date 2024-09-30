@@ -4,7 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 const Loading = ({ heightStyle, classStyle }) => {
    return (
       <div
-         className={`loading-page ${classStyle}`}
+         className={`loading-page d-flex justify-content-center align-items-center ${classStyle}`}
          style={{ height: heightStyle }}
       >
          <Spinner animation='border' role='status'>

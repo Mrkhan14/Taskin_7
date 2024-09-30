@@ -88,3 +88,16 @@ main {
 .debts .title {
   color: #fff !important;
 }
+.button {
+  border: none;
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 17px;
+  text-shadow: 1px 1px 2px #555;
+  margin-right: 20px;
+  cursor: pointer;
+  position: relative;
+  /* Dit is nodig voor de tooltip */
+  box-shadow: 4px 4px 5px #c5c5c5;
+}

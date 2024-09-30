@@ -7,20 +7,20 @@ import LendingCard from '../../components/card/Card';
 import { groups } from "../../data/groups";
 import { LIMIT } from '../../constants/index';
 
-const defaultBorrowing = {
+const defaultSalesShop = {
    id: 0,
    productName: '',
    price: '',
-   group: "REACT N1",
+   group: "Non",
    quantity: '',
    description: '',
    date: '',
 };
 
-function BorrowingPage() {
+function SalesShopPage() {
    const [show, setShow] = useState(false);
-   const [borrowings, setBorrowings] = useState([]);
-   const [borrowing, setBorrowing] = useState(defaultBorrowing);
+   const [salesShops, setSalesShops] = useState([]);
+   const [salesShop, setSalesShop] = useState(defaultSalesShop);
    const [validated, setValidated] = useState(false);
    const [search, setSearch] = useState('');
    const [selected, setSelected] = useState(null);
@@ -34,28 +34,28 @@ function BorrowingPage() {
       e.preventDefault();
       if (e.currentTarget.checkValidity()) {
          if (selected === null) {
-            const newUpdateBorrowings = [
-               ...borrowings,
-               { ...borrowing, id: v4() },
+            const newUpdateSalesShops = [
+               ...salesShops,
+               { ...salesShop, id: v4() },
             ];
-            setBorrowings(newUpdateBorrowings);
+            setSalesShops(newUpdateSalesShops);
             localStorage.setItem(
-               'borrowings',
-               JSON.stringify(newUpdateBorrowings)
+               'salesShops',
+               JSON.stringify(newUpdateSalesShops)
             );
             toast.success("Malumot qo'shildi");
          } else {
-            const newAddBorrowings = borrowings.map(item =>
-               item.id === selected ? borrowing : item
+            const newAddSalesShops = salesShops.map(item =>
+               item.id === selected ? salesShop : item
             );
             localStorage.setItem(
-               'borrowings',
-               JSON.stringify(newAddBorrowings)
+               'salesShops',
+               JSON.stringify(newAddSalesShops)
             );
-            setBorrowings(newAddBorrowings);
+            setSalesShops(newAddSalesShops);
             toast.success("Malumot o'zgardi");
          }
-         setBorrowing(defaultBorrowing);
+         setSalesShop(defaultSalesShop);
          setValidated(false);
          handleClose();
       } else {
@@ -65,14 +65,14 @@ function BorrowingPage() {
    };
 
    const handleChange = e => {
-      setBorrowing({ ...borrowing, [e.target.id]: e.target.value });
+      setSalesShop({ ...salesShop, [e.target.id]: e.target.value });
    };
 
    const deleteData = id => {
-      let newBorrowings = borrowings.filter(borrowing => borrowing.id !== id);
-      if (newBorrowings) {
-         setBorrowings(newBorrowings);
-         localStorage.setItem('borrowings', JSON.stringify(newBorrowings));
+      let newSalesShops = salesShops.filter(salesShop => salesShop.id !== id);
+      if (newSalesShops) {
+         setSalesShops(newSalesShops);
+         localStorage.setItem('salesShops', JSON.stringify(newSalesShops));
          toast.success("Malumot o'chrildi");
       } else {
          toast.error('Erverda xatolik bor');
@@ -80,16 +80,16 @@ function BorrowingPage() {
    };
 
    const editData = id => {
-      const moneyFound = borrowings.find(borrowing => borrowing.id === id);
+      const moneyFound = salesShops.find(salesShop => salesShop.id === id);
       setSelected(id);
-      setBorrowing(moneyFound);
+      setSalesShop(moneyFound);
       handleShow();
    };
 
    const openModal = () => {
       handleShow();
       setSelected(null);
-      setBorrowing(defaultBorrowing);
+      setSalesShop(defaultSalesShop);
    };
 
    const handleSearch = useCallback(e => {
@@ -97,19 +97,19 @@ function BorrowingPage() {
    }, []);
 
    useEffect(() => {
-      const borrowings = JSON.parse(localStorage.getItem('borrowings'));
-      const newData = Array.isArray(borrowings) ? borrowings : [];
-      setBorrowings(newData);
+      const salesShops = JSON.parse(localStorage.getItem('salesShops'));
+      const newData = Array.isArray(salesShops) ? salesShops : [];
+      setSalesShops(newData);
    }, []);
 
-   const filteredBorrowings = borrowings
-      .filter(borrowing => 
-         borrowing.productName.toLowerCase().includes(search) &&
-         (group === "all" || borrowing.group === group)
+   const filteredSalesShops = salesShops
+      .filter(salesShop => 
+         salesShop.productName.toLowerCase().includes(search) &&
+         (group === "all" || salesShop.group === group)
       );
 
-   const totalPages = Math.ceil(filteredBorrowings.length / LIMIT);
-   const paginatedBorrowings = filteredBorrowings.slice((currentPage - 1) * LIMIT, currentPage * LIMIT);
+   const totalPages = Math.ceil(filteredSalesShops.length / LIMIT);
+   const paginatedSalesShops = filteredSalesShops.slice((currentPage - 1) * LIMIT, currentPage * LIMIT);
 
    const handlePageChange = (pageNumber) => {
       setCurrentPage(pageNumber);
@@ -142,41 +142,43 @@ function BorrowingPage() {
             </InputGroup.Text>
          </InputGroup>
 
-         {paginatedBorrowings.map((item, i) => (
+         {paginatedSalesShops.map((item, i) => (
             <LendingCard
                key={i}
                {...item}
-               path='borrowings'
-               data={item?.borrowing}
+               path='sales'
+               data={item?.salesShop}
                deleteData={deleteData}
                editData={editData}
             />
          ))}
 
-         <div className="pagination">
-            {Array.from({ length: totalPages }, (_, i) => (
-               <button
-                  key={i}
-                  onClick={() => handlePageChange(i + 1)}
-                  className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
-               >
-                  {i + 1}
-               </button>
-            ))}
-         </div>
+         {totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center">
+               {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                     key={i}
+                     onClick={() => handlePageChange(i + 1)}
+                     className={` button page-item ${currentPage === i + 1 ? 'active bg-primary' : ''}`}
+                  >
+                     {i + 1}
+                  </button>
+               ))}
+            </div>
+         )}
 
          <Modal show={show} onHide={handleClose}>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
                <Modal.Header closeButton>
-                  <Modal.Title>borrowing data</Modal.Title>
+                  <Modal.Title>salesShop data</Modal.Title>
                </Modal.Header>
                <Modal.Body>
                   <Form.Group className='mb-3' controlId='productName'>
-                     <Form.Label>First name</Form.Label>
+                     <Form.Label>Product name</Form.Label>
                      <Form.Control
                         required
                         onChange={handleChange}
-                        value={borrowing.productName}
+                        value={salesShop.productName}
                         type='text'
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -190,7 +192,7 @@ function BorrowingPage() {
                      <Form.Control
                         required
                         onChange={handleChange}
-                        value={borrowing.price}
+                        value={salesShop.price}
                         type='number'
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -204,7 +206,7 @@ function BorrowingPage() {
                      <Form.Control
                         required
                         onChange={handleChange}
-                        value={borrowing.quantity}
+                        value={salesShop.quantity}
                         type='text'
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -218,7 +220,7 @@ function BorrowingPage() {
                      <Form.Control
                         required
                         onChange={handleChange}
-                        value={borrowing.description}
+                        value={salesShop.description}
                         type='text'
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -232,7 +234,7 @@ function BorrowingPage() {
                      <Form.Control
                         required
                         onChange={handleChange}
-                        value={borrowing.date}
+                        value={salesShop.date}
                         type='date'
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -243,7 +245,7 @@ function BorrowingPage() {
 
                   <Form.Group className="mb-3" controlId="group">
                      <Form.Label>Groups</Form.Label>
-                     <Form.Select onChange={handleChange} value={borrowing.group}>
+                     <Form.Select onChange={handleChange} value={salesShop.group}>
                         {groups.map(group => (
                            <option key={group} value={group}>
                               {group}
@@ -269,4 +271,4 @@ function BorrowingPage() {
    );
 }
 
-export default BorrowingPage;
+export default SalesShopPage;

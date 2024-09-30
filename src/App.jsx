@@ -11,7 +11,8 @@ import Loading from './components/UI/Loading';
 // Routes
 const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
 const ReactPage = lazy(() => import('./pages/ReactPage/ReactPage.jsx'));
-const JavascriptPage = lazy(() => import('./pages/JavascriptPage/JavascriptPage.jsx'));
+const SalesShopsPage = lazy(() => import('./pages/SalesShopPage/SalesShopsPage.jsx'));
+const SalesShopPage = lazy(() => import('./pages/SalesShopPage/SalesShopPage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage/NotFoundPage.jsx'));
 function App() {
@@ -39,9 +40,15 @@ function App() {
                     }
                   ></Route>
                   <Route
-                    path='javascript'
+                    path='sales'
                     element={
-                        isLogin ? <JavascriptPage /> : <Navigate to='login' />
+                        isLogin ? <SalesShopsPage /> : <Navigate to='login' />
+                    }
+                  ></Route>
+                  <Route
+                    path='sales/:pageId'
+                    element={
+                        isLogin ? <SalesShopPage /> : <Navigate to='login' />
                     }
                   ></Route>
               </Route>
