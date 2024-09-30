@@ -7,7 +7,7 @@ import { IS_LOGIN } from './constants/index';
 // Components
 import './App.css';
 import Layout from './components/layout/index.jsx';
-import Loading from './components/ui/Loading.jsx';
+import Loading from './components/Loading.jsx';
 // Routes
 const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
 const ReactPage = lazy(() => import('./pages/ReactPage/ReactPage.jsx'));
