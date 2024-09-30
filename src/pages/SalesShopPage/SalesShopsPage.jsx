@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import List from '../../components/card/List';
 import SalesShopFilter from '../../components/filters/SalesShopFilter';
@@ -16,6 +17,7 @@ const defaultItems = {
 };
 
 const SalesShopPage = () => {
+   const ref = useRef(null);
    const {
       items: salesShops,
       item: salesShop,
@@ -68,11 +70,18 @@ const SalesShopPage = () => {
 
          <List {...studentTableProps}></List>
 
-         <Modal show={show} onHide={handleClose}>
+         <Modal
+            show={show}
+            onShow={() => {
+               ref.current.focus();
+            }}
+            onHide={handleClose}
+         >
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
                <Modal.Header closeButton>
                   <Modal.Title>salesShop data</Modal.Title>
                </Modal.Header>
+
                <Modal.Body>
                   <Form.Group className='mb-3' controlId='productName'>
                      <Form.Label>Product name</Form.Label>
@@ -81,6 +90,7 @@ const SalesShopPage = () => {
                         onChange={handleChange}
                         value={salesShop.productName}
                         type='text'
+                        ref={ref}
                      />
                      <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                      <Form.Control.Feedback type='invalid'>
