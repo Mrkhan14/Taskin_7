@@ -70,6 +70,7 @@ const useCRUD = (defaultItems, localStorageKey) => {
       [items]
    );
 
+   
    const editItem = useCallback(
       id => {
          const moneyFound = items.find(item => item.id === id);
